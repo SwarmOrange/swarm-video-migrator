@@ -78,7 +78,7 @@ Query this endpoint to get an order status by the uuid provided
 
 ## TL;DR:
 
-Set env, and config file, install docker (+compose), send an order to `/api/post/order`. Producer takes the order, registers it in the SQLite DB, and pushes a work order to the Redis queue. Workers pull from the Redis queue through the producer, and do work on the order (downloading, transcoding, uploading).
+Set env & config file, install docker (+compose), send an order to `/api/post/order`. Producer takes the order, registers it in the SQLite DB, and pushes a work order to the Redis queue. Consumers pull from the Redis queue through the producer, and does work on the order (downloading, transcoding, uploading).
 
 ## Credit
 
