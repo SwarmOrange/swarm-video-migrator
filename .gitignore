@@ -1,10 +1,11 @@
 #sources/producer/node_modules
 #sources/consumer/node_modules
 
+.vscode
+
 # Config
 .env
-config
-!config/dev.json
+config/prod.json
 
 # Logs
 logs

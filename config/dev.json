@@ -1,0 +1,36 @@
+{
+    "PRODUCER_IP" : "http://producer",
+    "PRODUCER_PORT" : 4001,
+    "REQUEST_WORK_EVERY_N_MILLISECONDS" : 5000,
+    "MAX_WORK_PER_WORKER" : 1,
+    "MAX_RETRIES_PER_ORDER" : 3,
+    "CHECK_STALE_ITEMS_EVERY_N_MILLISECONDS" : 10000,
+    "MAX_JOB_TIMES" : [
+        {
+            "JOB_TYPE" : "playlist",
+            "JOB_LENGTH" : "300000"
+        },
+        {
+            "JOB_TYPE" : "video",
+            "JOB_LENGTH" :  300000
+        },
+        {
+            "JOB_TYPE" : "channel",
+            "JOB_LENGTH" : "300000"
+        }
+    ],
+    "OUTPUT_DOWNLOAD_LOCATION" : "/usr/consumer/downloads",
+    "OUTPUT_VIDEO_FORMAT" : "mp4",
+    "OUTPUT_AUDIO_FORMAT" : "mp3",
+    "OUTPUT_FILENAME_FORMAT" : "%(title)s_%(id)s.%(ext)s",
+    "AUTH_BASIC_USERNAME" : "developer",
+    "AUTH_BASIC_PASSWORD" : "developer",
+    "REDIS_HOST" : "redis",
+    "REDIS_PORT" : 6379,
+    "REDIS_NS" : "rsmq",
+    "REDIS_WORK_QUEUE" : "orders",
+    "REDIS_MAX_WORK_ORDERS": 1000,
+    "REDIS_SECRET" : "developer",
+    "SQLITE_ORDER_TABLE" : "orders",
+    "SQLITE_DB_LOCATION" : "./db/sqlite.db"
+}
