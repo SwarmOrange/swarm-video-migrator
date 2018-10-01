@@ -1,0 +1,43 @@
+version: "2.4"
+
+services:
+  producer:
+    build: docker/producer
+    ports:
+      - "4001:4001" # API
+      - "22688:22688" # nodemon debug port
+      #- "9229:9229" # pm2 debug port
+    command: npm run ${NODE_ENV}
+    environment:
+      - NODE_ENV=${NODE_ENV}
+    volumes:
+      - ./config:/usr/producer/config/
+      - ./sources/producer:/usr/producer/
+      - ./sources/shared_libs:/usr/producer/src/services/libs/
+      - ./volumes/db:/usr/producer/db
+    depends_on:
+      - redis
+    networks:
+      - migrator
+  consumer:
+    build: docker/consumer
+    command: npm run ${NODE_ENV}
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - LC_ALL=C.UTF-8
+    volumes:
+      - ./config:/usr/consumer/config/
+      - ./sources/consumer:/usr/consumer/
+      - ./sources/shared_libs:/usr/consumer/src/services/libs/
+      - ./volumes/downloads/:/usr/consumer/downloads
+      - ./volumes/vendor/:/usr/consumer/src/services/worker/lib/vendor
+    networks:
+      - migrator
+  redis:
+    image: redis:alpine
+    networks:
+      - migrator
+
+networks:
+  migrator:
+    driver: bridge

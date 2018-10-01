@@ -1,0 +1,13 @@
+{
+    "apps": [
+        {
+            "name": "backend-server",
+            "script": "./index.js",
+            "log_date_format": "YYYY-MM-DD HH:mm Z",
+            "ignore_watch": [
+                "node_modules",
+                "public"
+            ]
+        }
+    ]
+}

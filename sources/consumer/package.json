@@ -1,0 +1,143 @@
+{
+    "name": "swarm-video-migrator-producer",
+    "version": "1.0.0",
+    "description": "",
+    "repository": {
+        "type": "git",
+        "url": "git+ssh://git@github.com:edm00se/simple-docker-compose-node-redis-demo.git"
+    },
+    "author": "Dean Vaessen <hello@deanvaessen.com>",
+    "license": "ISC",
+    "main": "app.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node index.js",
+        "dev": "nodemon --legacy-watch --inspect=22688 index.js --exec \"node -r dotenv/config -r babel-register\""
+    },
+    "homepage": "",
+    "dependencies": {
+        "babel-cli": "^6.26.0",
+        "babel-plugin-transform-class-properties": "^6.24.1",
+        "babel-plugin-transform-object-rest-spread": "^6.26.0",
+        "babel-preset-env": "^1.6.1",
+        "byline": "^5.0.0",
+        "nodemon": "^1.18.4",
+        "request": "^2.88.0",
+        "fs-extra": "^7.0.0",
+        "youtube-dl": "^1.12.2"
+    },
+    "devDependencies": {
+        "babel-eslint": "^8.0.3",
+        "babel-jest": "^21.2.0",
+        "babel-register": "^6.26.0",
+        "dotenv": "^4.0.0",
+        "eslint": "^4.12.1",
+        "eslint-plugin-import": "^2.8.0",
+        "eslint-plugin-jest": "^21.3.2",
+        "eslint-watch": "^3.1.3",
+        "jest": "^21.2.1",
+        "nodemon": "^1.12.1",
+        "supertest": "^3.3.0",
+        "nodeunit": "^0.9.1"
+    },
+    "babel": {
+        "presets": [
+            [
+                "env",
+                {
+                    "targets": {
+                        "node": "current"
+                    }
+                }
+            ]
+        ],
+        "plugins": [
+            "transform-object-rest-spread",
+            "transform-class-properties"
+        ]
+    },
+    "eslintConfig": {
+        "parser": "babel-eslint",
+        "plugins": [
+            "import",
+            "jest"
+        ],
+        "parserOptions": {
+            "ecmaVersion": 2017,
+            "sourceType": "module",
+            "ecmaFeatures": {
+                "experimentalObjectRestSpread": true
+            }
+        },
+        "env": {
+            "node": true,
+            "jest": true
+        },
+        "extends": [
+            "eslint:recommended"
+        ],
+        "rules": {
+            "prettier/prettier": "error",
+            "jest/no-focused-tests": 2,
+            "jest/no-identical-title": 2,
+            "indent": [
+                "error",
+                4
+            ],
+            "quotes": [
+                "error",
+                "double"
+            ],
+            "semi": [
+                "error",
+                "always"
+            ],
+            "brace-style": [
+                "error",
+                "1tbs",
+                {
+                    "allowSingleLine": true
+                }
+            ],
+            "no-console": [
+                "off"
+            ],
+            "no-unused-vars": [
+                "warn"
+            ],
+            "space-in-parens": [
+                "error",
+                "always",
+                {
+                    "exceptions": []
+                }
+            ],
+            "object-curly-spacing": [
+                "error",
+                "always",
+                {
+                    "arraysInObjects": true,
+                    "objectsInObjects": true
+                }
+            ],
+            "max-len": [
+                "error",
+                {
+                    "code": 200
+                }
+            ],
+            "no-tabs": [
+                "error"
+            ],
+            "key-spacing": [
+                "error",
+                {
+                    "beforeColon": true
+                }
+            ]
+        }
+    },
+    "jest": {
+        "testEnvironment": "node"
+    }
+}
