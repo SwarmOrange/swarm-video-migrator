@@ -16,7 +16,7 @@ class Redis {
 
         logger.log( "info", "Service redis initialising" );
 
-        //rsmq.deleteQueue( { qname : REDIS_WORK_QUEUE }, ( err, resp ) => {} );
+        //this.deleteQueue( REDIS_WORK_QUEUE )
 
         rsmq.listQueues( ( err, queues ) => {
             if ( err ) {
@@ -40,8 +40,14 @@ class Redis {
         } );
     }
 
+    deleteQueue( queue, callback ) {
+        const { rsmq } = this.dependencies;
+
+        rsmq.deleteQueue( { qname : queue }, ( err, resp ) => {} );
+    }
+
     popOrder( callback ) {
-        const { rsmq, logger } = this.dependencies;
+        const { rsmq } = this.dependencies;
         const { REDIS_WORK_QUEUE } = this.config;
 
         rsmq.popMessage( { qname : REDIS_WORK_QUEUE }, ( err, resp ) => {
@@ -50,7 +56,7 @@ class Redis {
     }
 
     removeOrder( id, callback ) {
-        const { rsmq, logger } = this.dependencies;
+        const { rsmq } = this.dependencies;
         const { REDIS_WORK_QUEUE } = this.config;
 
         rsmq.deleteMessage( { qname : REDIS_WORK_QUEUE, id }, ( err, resp ) => {
@@ -59,7 +65,7 @@ class Redis {
     }
 
     getOrder( callback ) {
-        const { rsmq, logger } = this.dependencies;
+        const { rsmq } = this.dependencies;
         const { REDIS_WORK_QUEUE } = this.config;
 
         rsmq.receiveMessage( { qname : REDIS_WORK_QUEUE }, ( err, resp ) => {
@@ -68,7 +74,7 @@ class Redis {
     }
 
     saveOrder( message, callback ) {
-        const { rsmq, logger } = this.dependencies;
+        const { rsmq, gger } = this.dependencies;
         const { REDIS_WORK_QUEUE } = this.config;
 
         rsmq.sendMessage( { qname : REDIS_WORK_QUEUE, message }, ( err, resp ) => {
@@ -76,7 +82,7 @@ class Redis {
         } );
     }
 
-    workQueueIsHealthy( callback ) {
+    workQueueIsHealthy( newOrders, callback ) {
         const { rsmq, logger } = this.dependencies;
         const { REDIS_WORK_QUEUE, REDIS_MAX_WORK_ORDERS } = this.config;
 
@@ -90,7 +96,7 @@ class Redis {
 
             const { msgs } = resp;
 
-            const isHealthy = msgs < REDIS_MAX_WORK_ORDERS;
+            const isHealthy = msgs + newOrders < REDIS_MAX_WORK_ORDERS;
             if ( !isHealthy ) issues.push( "Overloaded, please try again later." );
 
             logger.log( "info", isHealthy ? "Redis queue is healthy" : "Redis is overloaded!" );

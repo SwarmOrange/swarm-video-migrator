@@ -44,17 +44,21 @@ Post orders here.
 3. "quality" : `hd` or `sd`
 4. "output" : `audio` or `video` (video includes audio)
 
-### (INTERAL)<sup>[3]</sup> /api/get/order
+### (INTERAL)<sup>[3]</sup> /api/order/pop - _GET_
 
-Query this endpoint to get an order.
+Query this endpoint to get a work order. This will be popped from the redis queue and marked as pulled by a consumer.
 
-### (INTERAL) /api/get/status/:uuid
+### (INTERAL) /api/order/:uuid - _GET_
 
-Query this endpoint to get an order status by the uuid provided
+Query this endpoint to get a specific order by the uuid provided
 
-### (INTERAL) /api/post/status/
+### (INTERAL) /api/order - _POST_
 
-Query this endpoint to get an order status by the uuid provided
+Query this endpoint to post a new order
+
+### (INTERAL) /api/order/status - _POST_
+
+Query this endpoint to post a order update
 
 #### Payload example:
 

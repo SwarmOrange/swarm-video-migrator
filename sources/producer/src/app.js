@@ -10,7 +10,6 @@ class Application {
     constructor( config ) {
         this.config = config;
         this.services;
-        this.api;
     }
 
     init() {
@@ -18,7 +17,9 @@ class Application {
         global.app.rootDir = path.resolve( __dirname );
 
         this.services = services.init( this.config );
-        this.api = new ( require( "./services/api.js" ) )( this.services, this.config );
+        const api = new ( require( "./services/api.js" ) )( this.services, this.config );
+
+        api.init();
     }
 }
 

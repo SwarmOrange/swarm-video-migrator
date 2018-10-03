@@ -96,8 +96,13 @@ class Worker {
 
             eventEmitter.emit( "state", state.states.URL_PROCESSED );
             eventEmitter.emit( "url_processed" );
-            eventEmitter.emit( "state", state.states.UPLOADED );
-            eventEmitter.emit( "uploaded" );
+
+            // Timeout is just to simulate that the system would normally take a bit of time to complete these tasks.
+            setTimeout( () => {
+                eventEmitter.emit( "state", state.states.UPLOADED );
+                eventEmitter.emit( "uploaded" );
+            }, 1000 );
+
             logger.log( "info", "File done." );
         } );
 

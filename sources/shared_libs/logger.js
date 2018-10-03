@@ -19,8 +19,7 @@ class Logger {
         break;
 
       case "success":
-        // Used for times when you do not want the application to throw
-        console.warn(`\n🎉\tSUCCESS: ${message}\t🎉`);
+        console.info(`\n🎉\tSUCCESS: ${message}\t🎉`);
         break;
 
       case "exception":

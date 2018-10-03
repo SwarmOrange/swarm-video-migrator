@@ -1,3 +1,9 @@
+/*******************************
+ * [order_factory.js]
+ * Churns out orders.
+ *
+ ******************************/
+
 class OrderFactory {
     constructor( dependencies, config ) {
         this.dependencies = dependencies;

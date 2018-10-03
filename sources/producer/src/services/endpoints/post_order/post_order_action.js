@@ -12,7 +12,7 @@ class Action {
     }
 
     launch( job, callback ) {
-        const { orderFactory, advertiser } = this.dependencies;
+        const { orderFactory, sqlite, advertiser } = this.dependencies;
 
         this.dependencies = {
             ...this.dependencies,
@@ -20,7 +20,19 @@ class Action {
         };
 
         const order = orderFactory.produce( this.parameters );
-        advertiser.advertise( order, callback );
+        sqlite.saveOrder( order, err => {
+            if ( err ) {
+                callback( err );
+                return;
+            }
+
+            advertiser.advertise( order, ( err, result ) => {
+                callback( err, {
+                    ...result,
+                    message : !err ? "Order registered, and queued for work!" : `Order registered, but not queued because ${err.message}, we will handle this.`
+                } );
+            } );
+        } );
     }
 }
 

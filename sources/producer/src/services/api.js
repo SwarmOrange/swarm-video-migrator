@@ -22,84 +22,23 @@ class API {
         this.registerEndpoints();
     }
 
-    getEndpoints( dir, callback ) {
-        const { logger } = this.dependencies;
-
-        const walker = walk.walk( dir, { followLinks : false } );
-        const endpoints = [];
-        const actions = [];
-        let result = [];
-
-        logger.log( "info", `Discovering endpoints in ${dir}...` );
-
-        walker.on( "directories", function( subDir, stat, next ) {
-            const subDirectory = walk.walk( subDir, { followLinks : false } );
-
-            logger.log( "info", `Found directory: ${subDir}` );
-
-            subDirectory.on( "file", function( root, stat, next ) {
-                logger.log( "info", `Found file ${root}/${stat.name}` );
-
-                if ( stat.name.includes( "_endpoint.js" ) ) {
-                    logger.log( "info", "Valid endpoint, registering." );
-                    endpoints.push( {
-                        location : root + "/" + stat.name,
-                        filename : stat.name
-                    } );
-                }
-
-                if ( stat.name.includes( "_action.js" ) ) {
-                    logger.log( "info", "Valid endpoint action, registering." );
-                    actions.push( {
-                        location : root + "/" + stat.name,
-                        filename : stat.name
-                    } );
-                }
-
-                next();
-            } );
-
-            subDirectory.on( "end", next );
-        } );
-
-        walker.on( "end", _ => {
-            logger.log( "info", `Done! I found ${endpoints.length} endpoints and ${actions.length} actions` );
-            result = endpoints.map( endpoint => {
-                const endpointName = endpoint.filename.replace( "_endpoint.js", "" );
-                const action = actions.find( action => action.filename.includes( endpointName ) );
-
-                return {
-                    entry : endpoint.location,
-                    action : action.location
-                };
-            } );
-
-            callback( result );
-        } );
-    }
-
     registerEndpoints() {
-        const { logger } = this.dependencies;
-
-        const currentDirectory = path.resolve( __dirname );
-        const endpointsDirectory = currentDirectory + "/endpoints";
+        const { logger, endpoints } = this.dependencies;
 
         logger.log( "info", "Registering endpoints..." );
 
-        this.getEndpoints( endpointsDirectory, results => {
-            for ( const result of results ) {
-                const { entry, action } = result;
+        for ( const entry of endpoints ) {
+            const { address, action } = entry;
 
-                const endpoint = new ( require( entry ) )(
-                    {
-                        ...this.dependencies,
-                        action : require( action )
-                    },
-                    this.config
-                );
-                endpoint.register();
-            }
-        } );
+            const endpoint = new address(
+                {
+                    ...this.dependencies,
+                    action
+                },
+                this.config
+            );
+            endpoint.register();
+        }
     }
 }
 

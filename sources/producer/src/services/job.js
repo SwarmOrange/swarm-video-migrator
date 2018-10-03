@@ -142,7 +142,7 @@ class Job {
 
     verifyRedisHealth( parameters, callback ) {
         const { redis } = this.dependencies;
-        redis.workQueueIsHealthy( callback );
+        redis.workQueueIsHealthy( 1, callback );
     }
 
     launch( action, callback ) {

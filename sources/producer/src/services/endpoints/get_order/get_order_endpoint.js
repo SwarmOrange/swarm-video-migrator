@@ -11,7 +11,7 @@ class Endpoint {
 
     register() {
         const { authentication, express, Job, logger, action } = this.dependencies;
-        const address = "/api/get/order";
+        const address = "/api/order/:uuid";
 
         logger.log( "info", `Registering endpoint ${address}` );
 
@@ -20,13 +20,17 @@ class Endpoint {
         } );
 
         express.get( address, ( req, res ) => {
-            logger.log( "info", "Order pulling request received:" );
+            const { uuid } = req.params;
+
+            logger.log( "info", "Order information request for has been received:" );
+            logger.log( "default", req.params );
 
             const parameters = {
                 verifications : {
                     shouldRecordToRedis : false,
-                    mandatoryParameters : []
-                }
+                    mandatoryParameters : [{ uuid }]
+                },
+                uuid
             };
 
             const dependencies = {

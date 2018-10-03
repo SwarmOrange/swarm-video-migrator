@@ -16,7 +16,7 @@ class Process {
     pullWork() {
         const { worker, request, logger } = this.dependencies;
         const { PRODUCER_IP, PRODUCER_PORT, AUTH_BASIC_USERNAME, AUTH_BASIC_PASSWORD } = this.config;
-        const endpoint = `${PRODUCER_IP}:${PRODUCER_PORT}/api/get/order`;
+        const endpoint = `${PRODUCER_IP}:${PRODUCER_PORT}/api/order/pop`;
 
         logger.log( "info", "Requesting work" );
 
@@ -155,24 +155,18 @@ class Process {
 
     reportStatusChange( status ) {
         if ( status == "URL_PROCESSED" ) this.updateWorkStatus( "processed" );
-        if ( status == "UPLOADED" ) this.updateWorkStatus( "completed" );
     }
 
     updateWorkStatus( status, result ) {
         const { PRODUCER_IP, PRODUCER_PORT, AUTH_BASIC_USERNAME, AUTH_BASIC_PASSWORD } = this.config;
         const { request, logger } = this.dependencies;
         const { uuid } = this.order;
-        const endpoint = `${PRODUCER_IP}:${PRODUCER_PORT}/api/post/status`;
+        const endpoint = `${PRODUCER_IP}:${PRODUCER_PORT}/api/order/status`;
 
         logger.log( "info", "Requesting status update server-side" );
         request
             .post( { url : endpoint, form : { uuid, status, result } }, ( err, response, body ) => {
                 logger.log( "info", `Server responded with status ${response && response.statusCode}:` );
-                if ( err ) {
-                    logger.log( "exception", err );
-                    return;
-                }
-
                 logger.log( "info", body );
             } )
             .auth( AUTH_BASIC_USERNAME, AUTH_BASIC_PASSWORD );

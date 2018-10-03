@@ -11,7 +11,7 @@ class Endpoint {
 
     register() {
         const { authentication, express, Job, logger, action } = this.dependencies;
-        const address = "/api/post/order";
+        const address = "/api/order";
 
         logger.log( "info", `Registering endpoint ${address}` );
 

@@ -34,7 +34,7 @@ class Doctor {
         } );
     }
 
-    pullStaleOrders( callback ) {
+    async pullStaleOrders( callback ) {
         const { MAX_JOB_TIMES, SQLITE_ORDER_TABLE, MAX_RETRIES_PER_ORDER } = this.config;
         const { sqlite, logger } = this.dependencies;
 
@@ -53,72 +53,59 @@ class Doctor {
             } else {
                 query = `
                     SELECT * FROM ${SQLITE_ORDER_TABLE}
-                    WHERE type = '${JOB_TYPE}'
-                    AND completed_at IS NULL
-                    AND
+                    WHERE
                     (
-                        error_count < ${MAX_RETRIES_PER_ORDER}
-                        AND ${theTime} - pulled_at > ${JOB_LENGTH}
-
+                        type = '${JOB_TYPE}'
+                        AND status IS NOT 'advertised'
+                        AND status IS NOT 'pending_child_orders'
+                        AND completed_at IS NULL
+                        AND
+                        (
+                            error_count < ${MAX_RETRIES_PER_ORDER}
+                            AND ${theTime} - pulled_at > ${JOB_LENGTH}
+                        )
                     )
                     OR
                     (
                         status = 'errored'
                         AND error_count < ${MAX_RETRIES_PER_ORDER}
                     )
+                    OR
+                    (
+                        status = 'accepted'
+                        AND ${theTime} - pulled_at > ${JOB_LENGTH}
+                    )
                 `;
             }
 
             logger.log( "info", `Checking for stale items of type ${JOB_TYPE}` );
-            sqlite.open( db => {
-                db.all( query, ( err, results ) => {
-                    if ( err ) {
-                        logger.log( "exception", err );
-                        return;
-                    }
+            await ( async function( query ) {
+                return new Promise( resolve => {
+                    sqlite.open( db => {
+                        db.all( query, ( err, results ) => {
+                            if ( err ) {
+                                logger.log( "exception", err );
+                                return;
+                            }
+                            callback( err, results );
+                            resolve();
+                        } );
 
-                    callback( err, results );
+                        db.close();
+                    } );
                 } );
-
-                db.close();
-            } );
+            } )( query );
         }
     }
 
     async repushOrder( order ) {
-        const { uuid } = order;
-        const { logger, schemas, sqlite, redis } = this.dependencies;
+        const { logger, redis, advertiser } = this.dependencies;
 
         logger.log( "info", "Repushing order" );
 
         return new Promise( resolve => {
-            redis.saveOrder( uuid, ( err, id ) => {
-                if ( err ) {
-                    logger.log( "exception", `Failed to save order ${uuid} to the redis queue:` );
-                    logger.log( "default", err );
-                    return;
-                } else {
-                    logger.log( "info", `Saved order ${uuid} to redis as ${id}` );
-                }
-
-                const updates = [{ key : "status", value : "accepted" }];
-                const statuses = schemas.orderTable.rows.find( column => column.identifier == "status" ).allowedValues;
-
-                for ( const status of statuses ) {
-                    if ( status == "accepted" ) continue;
-
-                    updates.push( { key : `${status}_at`, value : null } );
-                }
-
-                sqlite.updateOrder( uuid, updates, ( err, result ) => {
-                    if ( err ) {
-                        throw Error( err );
-                        return;
-                    }
-
-                    logger.log( "info", "Updated order" );
-                    resolve( result );
-                } );
+            advertiser.advertise( order, ( err, id ) => {
+                resolve();
             } );
         } );
     }

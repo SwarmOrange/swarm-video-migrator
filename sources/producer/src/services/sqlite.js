@@ -83,13 +83,64 @@ class Sqlite {
         } );
     }
 
-    getOrder( uuid, callback ) {
+    /*
+         WARNING: Because of the query structure, orders MUST be uniform in the amount of columns you want to write.
+         Values of those columns can be different though.
+         If you are using this function for child orders and basing the child off of the parent, then that works fine.
+    */
+    saveChildOrders( orders, callback ) {
+        const { SQLITE_ORDER_TABLE } = this.config;
+        const columns = Object.keys( orders[0] );
+
+        this.open( db => {
+            let query = `INSERT INTO ${SQLITE_ORDER_TABLE} (`;
+
+            // Define all the columns that we will insert into
+            for ( const i in Object.keys( columns ) ) {
+                const isLastColumn = i == columns.length - 1;
+                const key = columns[i];
+                query += `${key}${isLastColumn ? ")" : ","}`;
+            }
+
+            // Now all the values that go into those columns
+            query += " Values ";
+            for ( const i in orders ) {
+                const order = orders[i];
+                const isLastOrder = i == orders.length - 1;
+                query += " ( ";
+
+                for ( const i in Object.keys( columns ) ) {
+                    const isLastColumn = i == columns.length - 1;
+                    const key = columns[i];
+                    let value = order[key];
+
+                    const shouldLowerCase = ["type", "output"].includes( key ); // clean the user input
+                    if ( shouldLowerCase ) value = value.toLowerCase();
+
+                    if ( typeof value == "string" ) value = `'${value}'`;
+
+                    query += `${value}${isLastColumn ? ")" : ","}`;
+                }
+
+                if ( !isLastOrder ) query += ",";
+            }
+
+            db.run( query, err => {
+                callback( err );
+            } );
+
+            db.close();
+        } );
+    }
+
+    getOrders( key, value, callback ) {
         const { SQLITE_ORDER_TABLE } = this.config;
 
         this.open( db => {
-            const query = `SELECT * FROM ${SQLITE_ORDER_TABLE} WHERE uuid = '${uuid}'`;
+            const query = `SELECT * FROM ${SQLITE_ORDER_TABLE} WHERE ${key} = '${value}'`;
 
             db.all( query, ( err, result ) => {
+                if ( result.length == 0 && !err ) err = new Error( "Orders not found!" ); // urgh...
                 callback( err, result );
             } );
 
@@ -116,6 +167,56 @@ class Sqlite {
 
             db.run( query, ( err, result ) => {
                 callback( err, result );
+            } );
+
+            db.close();
+        } );
+    }
+
+    /*
+         WARNING: Because of the query structure, orders MUST be uniform in the amount of columns you want to write.
+         Values of those columns can be different though.
+         If you are using this function for child orders and basing the child off of the parent, then that works fine.
+    */
+    updateOrders( orders, callback ) {
+        const { SQLITE_ORDER_TABLE } = this.config;
+        const columns = Object.keys( orders[0] );
+
+        this.open( db => {
+            let query = `UPDATE ${SQLITE_ORDER_TABLE} SET`;
+
+            // Define all the columns that we will insert into
+            for ( const i in Object.keys( columns ) ) {
+                const isLastColumn = i == columns.length - 1;
+                const key = columns[i];
+                query += `${key}${isLastColumn ? ")" : ","}`;
+            }
+
+            // Now all the values that go into those columns
+            query += " Values ";
+            for ( const i in orders ) {
+                const order = orders[i];
+                const isLastOrder = i == orders.length - 1;
+                query += " ( ";
+
+                for ( const i in Object.keys( columns ) ) {
+                    const isLastColumn = i == columns.length - 1;
+                    const key = columns[i];
+                    let value = order[key];
+
+                    const shouldLowerCase = ["type", "output"].includes( key ); // clean the user input
+                    if ( shouldLowerCase ) value = value.toLowerCase();
+
+                    if ( typeof value == "string" ) value = `'${value}'`;
+
+                    query += `${value}${isLastColumn ? ")" : ","}`;
+                }
+
+                if ( !isLastOrder ) query += ",";
+            }
+
+            db.run( query, err => {
+                callback( err );
             } );
 
             db.close();

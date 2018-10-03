@@ -1,4 +1,8 @@
-module.exports = {
+/*******************************
+ * [order_schema.js]
+ * Schema for the order table in the SQLite db.
+ *
+ ******************************/ module.exports = {
     rows : [
         {
             identifier : "uuid",
@@ -15,7 +19,7 @@ module.exports = {
             identifier : "status",
             mandatory : true,
             type : "text",
-            allowedValues : ["accepted", "cancelled", "pulled", "processed", "completed", "errored"]
+            allowedValues : ["accepted", "advertised", "pulled", "processed", "pending_child_orders", "completed", "errored", "cancelled"]
         },
         {
             identifier : "type",
@@ -64,12 +68,22 @@ module.exports = {
             type : "integer"
         },
         {
+            identifier : "advertised_at",
+            mandatory : false,
+            type : "integer"
+        },
+        {
             identifier : "pulled_at",
             mandatory : false,
             type : "integer"
         },
         {
             identifier : "processed_at",
+            mandatory : false,
+            type : "integer"
+        },
+        {
+            identifier : "pending_child_orders_at",
             mandatory : false,
             type : "integer"
         },

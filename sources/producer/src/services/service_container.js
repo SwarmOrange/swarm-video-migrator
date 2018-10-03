@@ -59,6 +59,25 @@ module.exports = {
             config
         );
 
+        const endpoints = [
+            {
+                address : require( "./endpoints/post_order/post_order_endpoint.js" ),
+                action : require( "./endpoints/post_order/post_order_action.js" )
+            },
+            {
+                address : require( "./endpoints/get_order_pop/get_order_pop_endpoint.js" ),
+                action : require( "./endpoints/get_order_pop/get_order_pop_action.js" )
+            },
+            {
+                address : require( "./endpoints/get_order/get_order_endpoint.js" ),
+                action : require( "./endpoints/get_order/get_order_action.js" )
+            },
+            {
+                address : require( "./endpoints/post_order_status/post_order_status_endpoint.js" ),
+                action : require( "./endpoints/post_order_status/post_order_status_action.js" )
+            }
+        ];
+
         const redis = new ( require( "./redis.js" ) )(
             {
                 logger,
@@ -72,6 +91,7 @@ module.exports = {
             {
                 logger,
                 redis,
+                schemas,
                 sqlite
             },
             config
@@ -79,7 +99,7 @@ module.exports = {
 
         const Job = require( "./job.js" );
 
-        const doctor = new ( require( "./doctor.js" ) )( { sqlite, logger, redis, schemas }, config );
+        const doctor = new ( require( "./doctor.js" ) )( { sqlite, logger, redis, advertiser }, config );
         doctor.init();
 
         return {
@@ -96,6 +116,7 @@ module.exports = {
             generateUuid,
             urlParser,
             doctor,
+            endpoints,
             express : expressService.init()
         };
     }

@@ -1,5 +1,5 @@
 /*******************************
- * [get_status_endpoint.js]
+ * [post_order_status_endpoint.js]
  * Endpoint entry
  *
  ******************************/
@@ -11,7 +11,7 @@ class Endpoint {
 
     register() {
         const { authentication, express, Job, logger, action } = this.dependencies;
-        const address = "/api/get/status/:uuid";
+        const address = "/api/order/status";
 
         logger.log( "info", `Registering endpoint ${address}` );
 
@@ -19,18 +19,20 @@ class Endpoint {
             authentication.basic( req, res, next );
         } );
 
-        express.get( address, ( req, res ) => {
-            const { uuid } = req.params;
+        express.post( address, ( req, res ) => {
+            const { uuid, status, redis_id, result } = req.body;
 
-            logger.log( "info", "Order status request for has been received:" );
-            logger.log( "default", req.params );
+            logger.log( "info", "Status update has been received:" );
+            logger.log( "default", req.body );
 
             const parameters = {
                 verifications : {
-                    shouldRecordToRedis : false,
-                    mandatoryParameters : [{ uuid }]
+                    mandatoryParameters : [{ uuid, status }]
                 },
-                uuid
+                uuid,
+                status,
+                redis_id,
+                result
             };
 
             const dependencies = {
