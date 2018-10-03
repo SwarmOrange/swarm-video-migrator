@@ -131,9 +131,23 @@ class Process {
         }
     }
 
-    signalError( error ) {
-        this.updateWorkStatus( "errored" );
-        this.closeProcess();
+    reportStatusChange( status ) {
+        if ( status == "URL_PROCESSED" ) this.updateWorkStatus( "processed" );
+    }
+
+    updateWorkStatus( status, result ) {
+        const { PRODUCER_IP, PRODUCER_PORT, AUTH_BASIC_USERNAME, AUTH_BASIC_PASSWORD } = this.config;
+        const { request, logger } = this.dependencies;
+        const { uuid } = this.order;
+        const endpoint = `${PRODUCER_IP}:${PRODUCER_PORT}/api/order/status`;
+
+        logger.log( "info", "Requesting status update server-side" );
+        request
+            .post( { url : endpoint, form : { uuid, status, result } }, ( err, response, body ) => {
+                logger.log( "info", `Server responded with status ${response && response.statusCode}:` );
+                logger.log( "info", body );
+            } )
+            .auth( AUTH_BASIC_USERNAME, AUTH_BASIC_PASSWORD );
     }
 
     complete( err, result ) {
@@ -153,23 +167,9 @@ class Process {
         this.parent.decrementLiveProcesses();
     }
 
-    reportStatusChange( status ) {
-        if ( status == "URL_PROCESSED" ) this.updateWorkStatus( "processed" );
-    }
-
-    updateWorkStatus( status, result ) {
-        const { PRODUCER_IP, PRODUCER_PORT, AUTH_BASIC_USERNAME, AUTH_BASIC_PASSWORD } = this.config;
-        const { request, logger } = this.dependencies;
-        const { uuid } = this.order;
-        const endpoint = `${PRODUCER_IP}:${PRODUCER_PORT}/api/order/status`;
-
-        logger.log( "info", "Requesting status update server-side" );
-        request
-            .post( { url : endpoint, form : { uuid, status, result } }, ( err, response, body ) => {
-                logger.log( "info", `Server responded with status ${response && response.statusCode}:` );
-                logger.log( "info", body );
-            } )
-            .auth( AUTH_BASIC_USERNAME, AUTH_BASIC_PASSWORD );
+    signalError( error ) {
+        this.updateWorkStatus( "errored" );
+        this.closeProcess();
     }
 }
 
