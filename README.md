@@ -12,7 +12,7 @@
 
 ### Installation
 
-1. Create a `.env` file (see included `.env.dist`) and fill in the variable for the environment you want (e.g. `prod` or `dev`)
+1. Create an `.env` file (see included `.env.dist`) and fill in the variable for the environment you want (e.g. `prod` or `dev`)
 1. Create a _your_env_.json config file in `config/` and name it the same as your intended environment (see included `dev.json`)
 1. Download the required binaries from their respective websites and put them in `volumes/vendor`
 1. `docker-compose run producer npm i`
