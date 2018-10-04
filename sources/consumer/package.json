@@ -13,7 +13,7 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "nprm run serve",
         "serve" : "npm run build && npm run prod",
-        "dev": "nodemon --legacy-watch --inspect=22688 index.js --exec \"node -r dotenv/config -r babel-register\"",
+        "dev": "nodemon --legacy-watch --inspect=22688 src/index.js --exec \"node -r dotenv/config -r babel-register\"",
         "prod": "pm2 -f start init_prod.json --no-daemon",
         "build": "npm run clean && mkdir -p dist && babel src -s -D -d dist",
         "clean": "rimraf dist"
