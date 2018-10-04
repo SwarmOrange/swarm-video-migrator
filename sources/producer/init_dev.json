@@ -1,8 +1,8 @@
 {
     "apps": [
         {
-            "name": "backend-server",
-            "script": "./index.js",
+            "name": "producer",
+            "script": "./src/index.js",
             "watch": [
                 "./"
             ],

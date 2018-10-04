@@ -11,8 +11,12 @@
     "main": "app.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "node index.js",
-        "dev": "nodemon --legacy-watch --inspect=22688 index.js --exec \"node -r dotenv/config -r babel-register\""
+        "start": "nprm run serve",
+        "serve" : "npm run build && npm run prod",
+        "dev": "nodemon --legacy-watch --inspect=22688 index.js --exec \"node -r dotenv/config -r babel-register\"",
+        "prod": "pm2 -f start init_prod.json --no-daemon",
+        "build": "npm run clean && mkdir -p dist && babel src -s -D -d dist",
+        "clean": "rimraf dist"
     },
     "homepage": "",
     "dependencies": {
@@ -21,9 +25,11 @@
         "babel-plugin-transform-object-rest-spread": "^6.26.0",
         "babel-preset-env": "^1.6.1",
         "byline": "^5.0.0",
-        "nodemon": "^1.18.4",
-        "request": "^2.88.0",
         "fs-extra": "^7.0.0",
+        "nodemon": "^1.18.4",
+        "pm2": "^3.2.1",
+        "request": "^2.88.0",
+        "rimraf": "^2.6.2",
         "youtube-dl": "^1.12.2"
     },
     "devDependencies": {

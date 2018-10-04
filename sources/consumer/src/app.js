@@ -12,6 +12,7 @@ class Application {
         this.services;
         this.api;
         this.launchProcess = this.launchProcess.bind( this );
+        this.finishProcess = this.finishProcess.bind( this );
         this.incrementLiveProcesses = this.incrementLiveProcesses.bind( this );
         this.decrementLiveProcesses = this.decrementLiveProcesses.bind( this );
         this.liveProcesses = 0;

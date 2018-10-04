@@ -4,7 +4,7 @@
  *
  ******************************/
 
-import Application from "./src/app";
-const config = require( `./config/${process.env.NODE_ENV}.json` );
+import Application from "./app.js";
+const config = require( `../config/${process.env.NODE_ENV}.json` );
 
 new Application( config ).init();

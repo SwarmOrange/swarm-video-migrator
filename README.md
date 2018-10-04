@@ -17,6 +17,8 @@
 1. Download the required binaries from their respective websites and put them in `volumes/vendor`
 1. `docker-compose run producer npm i`
 1. `docker-compose run consumer npm i`
+1. `docker-compose run consumer npm run build`
+1. `docker-compose run producer npm run build`
 1. `docker-compose up` _(-d)_ `producer`
 1. `docker-compose up` _(-d)_ `consumer`
 
@@ -86,5 +88,5 @@ Set env & config file, install docker (+compose), send an order to `/api/post/or
 
 ## Credit
 
-1. `youtube-dl` is used as the downloading and transcoding of the videos, see http://rg3.github.io/
+1. `youtube-dl` is used for the downloading and transcoding of the videos, see http://rg3.github.io/
 2. `ffmpeg` and `ffprobe` are used as well.

@@ -109,6 +109,8 @@ class Worker {
         return eventEmitter;
     }
 
+    upload() {}
+
     isWarning( err ) {
         return err.lastIndexOf( "WARNING:", 0 ) === 0;
     }

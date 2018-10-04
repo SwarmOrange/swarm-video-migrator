@@ -3,6 +3,8 @@
 
 .vscode
 
+dist/
+
 # Config
 .env
 config/prod.json
