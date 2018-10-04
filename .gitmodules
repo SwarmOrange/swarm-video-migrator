@@ -1,0 +1,3 @@
+[submodule "sources/shared_libs/free-core"]
+	path = sources/shared_libs/free-core
+	url = https://github.com/SwarmOrange/free-core
