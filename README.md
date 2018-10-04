@@ -6,7 +6,7 @@
 
 1. `docker`
 1. `docker-compose`
-1. `youtube-dl` binary _(http://rg3.github.io/)_
+1. `youtube-dl` binary _(http://rg3.github.io/youtube-dl/)_
 1. `ffmpeg` binary
 1. `ffprobe` binary
 
