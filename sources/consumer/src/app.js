@@ -48,7 +48,11 @@ class Application {
                 worker : new this.services.worker( this.services.workerDependencies )
             },
             this.config
-        ).init( this );
+        ).init( this.finishProcess );
+    }
+
+    finishProcess() {
+        this.decrementLiveProcesses();
     }
 
     incrementLiveProcesses() {

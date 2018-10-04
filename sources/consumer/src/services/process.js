@@ -5,11 +5,11 @@ class Process {
         this.updateWorkStatus = this.updateWorkStatus.bind( this );
         this.order;
         this.result;
-        this.parent;
+        this.onFinish;
     }
 
-    init( parent ) {
-        this.parent = parent;
+    init( callback ) {
+        this.onFinish = callback;
         this.pullWork();
     }
 
@@ -164,11 +164,11 @@ class Process {
         const { logger } = this.dependencies;
         logger.log( "info", "Closing process!" );
 
-        this.parent.decrementLiveProcesses();
+        this.onFinish();
     }
 
     signalError( error ) {
-        this.updateWorkStatus( "errored" );
+        this.updateWorkStatus( "errored", error );
         this.closeProcess();
     }
 }
