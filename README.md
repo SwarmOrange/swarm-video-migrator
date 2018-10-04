@@ -88,5 +88,5 @@ Set env & config file, install docker (+compose), send an order to `/api/post/or
 
 ## Credit
 
-1. `youtube-dl` is used for the downloading and transcoding of the videos, see http://rg3.github.io/
+1. `youtube-dl` is used for the downloading and transcoding of the videos, see _http://rg3.github.io/youtube-dl/_
 2. `ffmpeg` and `ffprobe` are used as well.
