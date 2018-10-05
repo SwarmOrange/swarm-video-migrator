@@ -42,7 +42,7 @@ Post orders here.
 #### Payload keys:
 
 1. "url" is the piece of content to download
-2. "swarm_hash" is the location to upload the content to
+2. "swarm_hash" is the location to upload the content to (beefree profile page hash)
 3. "quality" : `hd` or `sd`
 4. "output" : `audio` or `video` (video includes audio)
 
